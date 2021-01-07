@@ -14,17 +14,7 @@ public class TextWatermarkWriter implements IWatermarkWriter {
 
     @Override
     public void write(BufferedImage img, byte[] data) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : data) {
-            if (font.canDisplay(b)) {
-                sb.append((char)b);
-            } else {
-                sb.append("\\x");
-                sb.append(Integer.toHexString(b));
-            }
-        }
-        write(img, sb.toString());
-        return;
+        write(img, TextUtils.bytesToString(data));
     }
 
     @Override
