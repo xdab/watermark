@@ -1,12 +1,14 @@
 package mini.xdab;
 
+import lombok.NonNull;
+
 import java.awt.image.BufferedImage;
 
 
 public interface IWatermarkWriter {
 
-    void write(BufferedImage img, byte[] data);
+    void write(@NonNull BufferedImage img, @NonNull byte[] data);
 
-    void write(BufferedImage img, String string);
+    void write(@NonNull BufferedImage img, @NonNull String string);
 
 }

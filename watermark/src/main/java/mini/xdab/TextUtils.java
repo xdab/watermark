@@ -1,5 +1,7 @@
 package mini.xdab;
 
+import lombok.NonNull;
+
 public class TextUtils {
 
     public static boolean isPrintable(char c) {
@@ -7,7 +9,7 @@ public class TextUtils {
     }
 
 
-    public static String bytesToString(byte[] bytes) {
+    public static String bytesToString(@NonNull byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             if (TextUtils.isPrintable((char)b)) {
