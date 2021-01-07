@@ -9,6 +9,7 @@ public class TextWatermarkWriter implements IWatermarkWriter {
     protected Font font;
     protected Color color;
     protected double alpha;
+    protected int placement;
 
 
     @Override
