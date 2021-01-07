@@ -29,7 +29,7 @@ public class TextWatermarkWriter implements IWatermarkWriter {
 
     @Override
     public void write(BufferedImage img, String string) {
-        //TODO
+        //TODO: CREATE write(BufferedImage img, String string)
     }
 
 }
