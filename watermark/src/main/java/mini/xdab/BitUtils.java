@@ -11,4 +11,7 @@ public class BitUtils {
         return (of ^ (of & 1)) | (toValue & 1);
     }
 
+    public static int parityBit(int of) {
+        return Integer.bitCount(of) & 1;
+    }
 }
