@@ -1,23 +1,53 @@
 package mini.xdab;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Random;
+
 
 public class LSBWatermark extends DigitalWatermark {
 
     public static final byte SYNC_WORD = 0x3a; // ':'
     public static final byte END_WORD  = 0x45; // 'E' (almost ~SYNCWORD)
 
+    // Semantic function to remove bit magic from message reading
+    protected static boolean isGoodSyncWord(int candidate) {
+        return BitUtils.isGoodByte(candidate, SYNC_WORD);
+    }
 
+
+    protected int readByte(@NonNull BufferedImage img, int position) {
+        int byteCandidate = 0x000;
+
+        for (int offset = 0; offset < 3; ++offset) {
+            int x = (position + offset) % img.getWidth();
+            int y = (position + offset) / img.getHeight();
+
+            int rgb = img.getRGB(x, y);
+            int threeBits = RGBUtils.getChannelLSBs(rgb);
+            byteCandidate = (byteCandidate << 3) | threeBits;
+        }
+
+        if (BitUtils.goodParity(byteCandidate))
+            return byteCandidate >>> 1;
+
+        return -1;
+    }
+
+
+    @SneakyThrows
     @Override
     public byte[] read(@NonNull BufferedImage img) {
-        int position = 0;
         int imgSizePx = img.getHeight() * img.getHeight();
+        var probableMessages = new ArrayList<Integer>();
 
         int lastRead = 0x000;
-        while (position < imgSizePx) {
+
+        for (int position = 0; position < imgSizePx; ++position) {
             int x = position % img.getWidth();
             int y = position / img.getHeight();
 
@@ -27,20 +57,40 @@ public class LSBWatermark extends DigitalWatermark {
             int threeBits = RGBUtils.getChannelLSBs(rgb);
             lastRead = (lastRead << 3) | threeBits;
 
-            // (SYNC_WORD's parity bit is 0)
-            if ((lastRead & 0x1ff) == (SYNC_WORD << 1)) {
-                // Probable message detected
-                System.out.println("Probable msg start at position" + position);
-                // TODO: start reading the message into some buffer
-                // TODO:    if parity breaks before a correct END_WORD: message is invalid
-                // TODO:    if a correct END_WORD is detected: save message
+            if (isGoodSyncWord(lastRead)) {
+                // Minus 2 because since the SYNC_WORD is completely in lastRead
+                // we must have gone 2 pixels ahead from its start
+                probableMessages.add(position - 2);
             }
-
-            position++;
         }
 
-        // TODO: concatenate messages and return
-        return new byte[0];
+        var messageBuffer = new ByteArrayOutputStream();
+        var message = new ByteArrayOutputStream();
+
+        for (int msgStartPx : probableMessages) {
+            messageBuffer.reset();
+
+            for (int pos = msgStartPx; pos < imgSizePx-3; pos+=3) {
+                int b = readByte(img, pos);
+
+                if (b >= 0) {
+                    messageBuffer.write(b);
+                } else {
+                    messageBuffer.reset();
+                    break;
+                }
+
+                if (b == END_WORD)
+                    break;
+            }
+
+            // Got a message
+            if (messageBuffer.size() > 0) {
+                message.write(messageBuffer.toByteArray());
+            }
+        }
+
+        return message.toByteArray();
     }
 
 
