@@ -16,7 +16,7 @@ public class TextUtils {
                 sb.append((char)b);
             } else {
                 sb.append("\\x");
-                sb.append(Integer.toHexString(b));
+                sb.append(Integer.toHexString(b & 0xff));
             }
         }
         return sb.toString();
