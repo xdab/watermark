@@ -14,4 +14,13 @@ public class BitUtils {
     public static int parityBit(int of) {
         return Integer.bitCount(of) & 1;
     }
+
+    public static boolean goodParity(int of) {
+        return (Integer.bitCount(of) & 1) == 0;
+    }
+
+    public static boolean isGoodByte(int candidate, int correctByte) {
+        candidate &= 0x1ff;
+        return goodParity(candidate) && ((candidate >>> 1) == correctByte);
+    }
 }
