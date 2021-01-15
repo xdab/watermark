@@ -45,6 +45,9 @@ public class LSBWatermark extends DigitalWatermark {
         int imgSizePx = img.getHeight() * img.getHeight();
         var probableMessages = new ArrayList<Integer>();
 
+        // Probable message starts (valid SYNC_WORD occurences)
+        // are found and recorded
+
         int lastRead = 0x000;
 
         for (int position = 0; position < imgSizePx; ++position) {
@@ -64,6 +67,9 @@ public class LSBWatermark extends DigitalWatermark {
             }
         }
 
+        // Probable messages are individually checked
+        // for valid body followed by a valid END_WORD
+
         var messageBuffer = new ByteArrayOutputStream();
         var message = new ByteArrayOutputStream();
 
@@ -73,15 +79,19 @@ public class LSBWatermark extends DigitalWatermark {
             for (int pos = msgStartPx; pos < imgSizePx-3; pos+=3) {
                 int b = readByte(img, pos);
 
-                if (b >= 0) {
-                    messageBuffer.write(b);
-                } else {
+                if (b < 0) {
+                    // Invalid byte invalidates the whole message
                     messageBuffer.reset();
                     break;
-                }
 
-                if (b == END_WORD)
-                    break;
+                } else {
+                    // Valid byte is appended to message candidate
+                    messageBuffer.write(b);
+
+                    // END_WORD submits the candidate
+                    if (b == END_WORD)
+                        break;
+                }
             }
 
             // Got a message
