@@ -11,8 +11,8 @@ import java.util.Random;
 
 public class LSBWatermark extends DigitalWatermark {
 
-    public static final byte SYNC_WORD = 0x3a; // ':'
-    public static final byte END_WORD  = 0x45; // 'E' (almost ~SYNCWORD)
+    public static final byte SYNC_WORD = 0x5b; // '['
+    public static final byte END_WORD  = 0x24; // '$' (almost ~SYNCWORD)
 
     // Semantic function to remove bit magic from message reading
     protected static boolean isGoodSyncWord(int candidate) {
