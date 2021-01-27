@@ -1,4 +1,4 @@
-package mini.xdab;
+package mini.xdab.utils;
 
 import lombok.NonNull;
 

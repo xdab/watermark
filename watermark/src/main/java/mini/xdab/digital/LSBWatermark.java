@@ -1,7 +1,10 @@
-package mini.xdab;
+package mini.xdab.digital;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import mini.xdab.digital.DigitalWatermark;
+import mini.xdab.utils.BitUtils;
+import mini.xdab.utils.RGBUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;

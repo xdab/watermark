@@ -1,8 +1,10 @@
 package mini.xdab;
 
-import mini.xdab.Experimental.LSBVisualizer;
-
-import java.awt.image.BufferedImage;
+import mini.xdab.tools.LSBVisualizer;
+import mini.xdab.analog.TextWatermarkWriter;
+import mini.xdab.digital.DigitalWatermark;
+import mini.xdab.digital.LSBWatermark;
+import mini.xdab.utils.ImageUtils;
 
 /**
  * Hello world!
@@ -12,6 +14,7 @@ public class App
 {
     public static void main( String[] args )
     {
+        IWatermarkWriter anlgWm = new TextWatermarkWriter();
         DigitalWatermark digiWm = new LSBWatermark();
         var img = ImageUtils.loadFromFile("testInput1.png");
         String msg = "Hello World!";
@@ -19,8 +22,8 @@ public class App
         var vis = LSBVisualizer.process(img);
         ImageUtils.saveToFile(vis, "lsbInput1.png");
 
-        for (int i = 0; i < 1; ++i)
-            digiWm.write(img, msg);
+        anlgWm.write(img, msg);
+        digiWm.write(img, msg);
 
         ImageUtils.saveToFile(img, "testOutput1.png");
 

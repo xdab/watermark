@@ -1,7 +1,8 @@
-package mini.xdab;
+package mini.xdab.analog;
 
 import lombok.*;
-import org.intellij.lang.annotations.JdkConstants;
+import mini.xdab.IWatermarkWriter;
+import mini.xdab.utils.TextUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,7 +23,7 @@ public class TextWatermarkWriter implements IWatermarkWriter {
 
     @Override
     public void write(@NonNull BufferedImage img, @NonNull String string) {
-        //TODO: CREATE write(BufferedImage img, String string)
+        // TODO: CREATE write(BufferedImage img, String string)
     }
 
     // Font related getters/setters

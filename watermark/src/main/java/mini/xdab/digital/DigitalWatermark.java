@@ -1,7 +1,9 @@
-package mini.xdab;
+package mini.xdab.digital;
 
 import lombok.NonNull;
-import org.w3c.dom.Text;
+import mini.xdab.IWatermarkReader;
+import mini.xdab.IWatermarkWriter;
+import mini.xdab.utils.TextUtils;
 
 import java.awt.image.BufferedImage;
 import java.nio.charset.StandardCharsets;

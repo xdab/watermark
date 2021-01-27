@@ -2,6 +2,7 @@ package mini.xdab;
 
 import static org.junit.Assert.*;
 
+import mini.xdab.utils.TextUtils;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;

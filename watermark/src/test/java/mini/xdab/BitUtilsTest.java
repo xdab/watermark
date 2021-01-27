@@ -2,6 +2,7 @@ package mini.xdab;
 
 import static org.junit.Assert.*;
 
+import mini.xdab.utils.BitUtils;
 import org.junit.Test;
 
 

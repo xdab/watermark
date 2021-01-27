@@ -1,6 +1,6 @@
-package mini.xdab.Experimental;
+package mini.xdab.tools;
 
-import mini.xdab.RGBUtils;
+import mini.xdab.utils.RGBUtils;
 
 import java.awt.image.BufferedImage;
 
