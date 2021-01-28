@@ -1,10 +1,11 @@
 package mini.xdab;
 
-import mini.xdab.tools.LSBVisualizer;
-import mini.xdab.analog.TextWatermarkWriter;
-import mini.xdab.digital.DigitalWatermark;
-import mini.xdab.digital.LSBWatermark;
-import mini.xdab.utils.ImageUtils;
+import lombok.SneakyThrows;
+import mini.xdab.constants.CommandLineConstants;
+import org.apache.commons.cli.*;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Hello world!
@@ -12,26 +13,46 @@ import mini.xdab.utils.ImageUtils;
  */
 public class App 
 {
-    public static void main( String[] args )
+    @SneakyThrows
+    public static void main(String[] args )
     {
-        IWatermarkWriter anlgWm = new TextWatermarkWriter();
-        DigitalWatermark digiWm = new LSBWatermark();
-        var img = ImageUtils.loadFromFile("testInput1.png");
-        String msg = "Hello World!";
+        var strings = ResourceBundle.getBundle("strings", Locale.getDefault());
 
-        var vis = LSBVisualizer.process(img);
-        ImageUtils.saveToFile(vis, "lsbInput1.png");
+        var options = new Options();
 
-        anlgWm.write(img, msg);
-        digiWm.write(img, msg);
+        var input = new Option("i", CommandLineConstants.CL_ARGUMENT_INPUT, true,
+                strings.getString("input-arg-desc"));
+        input.setRequired(true);
+        options.addOption(input);
 
-        ImageUtils.saveToFile(img, "testOutput1.png");
+        var output = new Option("o", CommandLineConstants.CL_ARGUMENT_OUTPUT, true,
+                strings.getString("output-arg-desc"));
+        output.setRequired(false);
+        options.addOption(output);
 
-        var img2 = ImageUtils.loadFromFile("testOutput1.png");
-        String msg2 = digiWm.readString(img2);
-        System.out.println("Decoded message: '" + msg2 + "'");
+        var message = new Option("m", CommandLineConstants.CL_ARGUMENT_MESSAGE, true,
+                strings.getString("message-arg-desc"));
+        message.setRequired(false);
+        options.addOption(message);
 
-        var vis2 = LSBVisualizer.process(img2);
-        ImageUtils.saveToFile(vis2, "lsbOutput1.png");
+        var repeat = new Option("r", CommandLineConstants.CL_ARGUMENT_REPEAT, true,
+                strings.getString("repeat-arg-desc"));
+        repeat.setRequired(false);
+        options.addOption(repeat);
+
+        var parser = new DefaultParser();
+        var formatter = new HelpFormatter();
+        CommandLine cmd = null;
+
+        try {
+            cmd = parser.parse(options, args);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("watermark", options);
+            System.exit(1);
+        }
+
+        var cla = new CommandLineArguments(cmd);
+        WatermarkApp.runBasedOnCommandLineArguments(cla);
     }
 }
