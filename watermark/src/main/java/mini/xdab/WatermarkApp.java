@@ -1,7 +1,6 @@
 package mini.xdab;
 
 import mini.xdab.analog.TextWatermarkWriter;
-import mini.xdab.constants.CommandLineConstants;
 import mini.xdab.digital.DigitalWatermark;
 import mini.xdab.digital.LSBWatermark;
 import mini.xdab.tools.LSBVisualizer;
@@ -35,6 +34,7 @@ public class WatermarkApp {
         System.out.println(cla.getInput());
         System.out.println(cla.getOutput());
         System.out.println(cla.getRepeat());
+        System.out.println(cla.getWriter());
         System.out.println(cla.getMessage());
     }
 

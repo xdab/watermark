@@ -30,6 +30,11 @@ public class App
         output.setRequired(false);
         options.addOption(output);
 
+        var type = new Option("t", CommandLineConstants.CL_ARGUMENT_TYPE, true,
+                strings.getString("type-arg-desc"));
+        type.setRequired(false);
+        options.addOption(type);
+
         var message = new Option("m", CommandLineConstants.CL_ARGUMENT_MESSAGE, true,
                 strings.getString("message-arg-desc"));
         message.setRequired(false);
