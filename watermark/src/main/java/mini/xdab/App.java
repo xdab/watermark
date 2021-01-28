@@ -20,28 +20,28 @@ public class App
 
         var options = new Options();
 
-        var input = new Option("i", CommandLineConstants.CL_ARGUMENT_INPUT, true,
-                strings.getString("input-arg-desc"));
+        var input = new Option(CommandLineConstants.SHORT_ARGUMENT_INPUT, CommandLineConstants.LONG_ARGUMENT_INPUT,
+                true, strings.getString("input-arg-desc"));
         input.setRequired(true);
         options.addOption(input);
 
-        var output = new Option("o", CommandLineConstants.CL_ARGUMENT_OUTPUT, true,
-                strings.getString("output-arg-desc"));
+        var output = new Option(CommandLineConstants.SHORT_ARGUMENT_OUTPUT, CommandLineConstants.LONG_ARGUMENT_OUTPUT,
+                true, strings.getString("output-arg-desc"));
         output.setRequired(false);
         options.addOption(output);
 
-        var type = new Option("t", CommandLineConstants.CL_ARGUMENT_TYPE, true,
-                strings.getString("type-arg-desc"));
+        var type = new Option(CommandLineConstants.SHORT_ARGUMENT_TYPE, CommandLineConstants.LONG_ARGUMENT_TYPE,
+                true, strings.getString("type-arg-desc"));
         type.setRequired(false);
         options.addOption(type);
 
-        var message = new Option("m", CommandLineConstants.CL_ARGUMENT_MESSAGE, true,
-                strings.getString("message-arg-desc"));
+        var message = new Option(CommandLineConstants.SHORT_ARGUMENT_MESSAGE, CommandLineConstants.LONG_ARGUMENT_MESSAGE,
+                true, strings.getString("message-arg-desc"));
         message.setRequired(false);
         options.addOption(message);
 
-        var repeat = new Option("r", CommandLineConstants.CL_ARGUMENT_REPEAT, true,
-                strings.getString("repeat-arg-desc"));
+        var repeat = new Option(CommandLineConstants.SHORT_ARGUMENT_REPEAT, CommandLineConstants.LONG_ARGUMENT_REPEAT,
+                true, strings.getString("repeat-arg-desc"));
         repeat.setRequired(false);
         options.addOption(repeat);
 

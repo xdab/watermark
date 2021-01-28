@@ -24,29 +24,29 @@ public class CommandLineArguments {
 
 
     public String getInput() {
-        return cmd.getOptionValue(CommandLineConstants.CL_ARGUMENT_INPUT);
+        return cmd.getOptionValue(CommandLineConstants.LONG_ARGUMENT_INPUT);
     }
 
     public String getOutput() {
         return Optional
-                .ofNullable(cmd.getOptionValue(CommandLineConstants.CL_ARGUMENT_OUTPUT))
+                .ofNullable(cmd.getOptionValue(CommandLineConstants.LONG_ARGUMENT_OUTPUT))
                 .orElseGet(this::getDefaultOutput);
     }
 
     public IWatermarkWriter getWriter() {
-        var t = cmd.getOptionValue(CommandLineConstants.CL_ARGUMENT_TYPE);
+        var t = cmd.getOptionValue(CommandLineConstants.LONG_ARGUMENT_TYPE);
         if (t == null || t.isEmpty())
             return getDefaultWM();
 
         t = t.toLowerCase(Locale.ROOT);
         switch (t) {
-            case CommandLineConstants.CL_TYPE_ALIAS_LSB:
+            case CommandLineConstants.TYPE_ALIAS_LSB:
                 return getLSBWM();
-            case CommandLineConstants.CL_TYPE_ALIAS_STRIPES:
+            case CommandLineConstants.TYPE_ALIAS_STRIPES:
                 return getStripesWM();
-            case CommandLineConstants.CL_TYPE_ALIAS_BLOCKS:
+            case CommandLineConstants.TYPE_ALIAS_BLOCKS:
                 return getBlocksWM();
-            case CommandLineConstants.CL_TYPE_ALIAS_CONSTELLATION:
+            case CommandLineConstants.TYPE_ALIAS_CONSTELLATION:
                 return getConstellationWM();
         }
 
@@ -55,14 +55,14 @@ public class CommandLineArguments {
 
     public Integer getRepeat() {
         int R = getDefaultRepeat();
-        try { R = Integer.parseUnsignedInt(cmd.getOptionValue(CommandLineConstants.CL_ARGUMENT_REPEAT)); }
+        try { R = Integer.parseUnsignedInt(cmd.getOptionValue(CommandLineConstants.LONG_ARGUMENT_REPEAT)); }
         catch (NumberFormatException nfe) { }
         return R;
     }
 
     public String getMessage() {
         return Optional
-                .ofNullable(cmd.getOptionValue(CommandLineConstants.CL_ARGUMENT_MESSAGE))
+                .ofNullable(cmd.getOptionValue(CommandLineConstants.LONG_ARGUMENT_MESSAGE))
                 .orElseGet(this::getDefaultMessage);
     }
 
