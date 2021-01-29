@@ -2,12 +2,12 @@ package mini.xdab.digital;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import mini.xdab.digital.DigitalWatermark;
 import mini.xdab.utils.BitUtils;
 import mini.xdab.utils.RGBUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -99,7 +99,9 @@ public class LSBWatermark extends DigitalWatermark {
 
             // Got a message
             if (messageBuffer.size() > 0) {
-                message.write(messageBuffer.toByteArray());
+                try {
+                    message.write(messageBuffer.toByteArray());
+                } catch (IOException ioe) { }
             }
         }
 

@@ -5,13 +5,16 @@ import lombok.SneakyThrows;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 
 public class ImageUtils {
 
     @SneakyThrows
     public static BufferedImage loadFromFile(String fileName) {
-        return ImageIO.read(new File(fileName));
+        try { return ImageIO.read(new File(fileName)); }
+        catch (IOException ioe) { }
+        return null;
     }
 
 
@@ -28,7 +31,9 @@ public class ImageUtils {
             file = new File(fileName + ".png");
         }
 
-        ImageIO.write(img, format, file);
+        try {
+            ImageIO.write(img, format, file);
+        } catch (IOException ioe) { }
     }
 
 }
