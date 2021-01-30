@@ -92,7 +92,23 @@ public final class Options {
     }
 
     public static Boolean getWrite() {
-        return getParsedArgs().hasOption(OptionConstants.FLAG_WRITE);
+        return !getRead();
+    }
+
+    public static Boolean getVertical() {
+        return getParsedArgs().hasOption(OptionConstants.FLAG_VERTICAL);
+    }
+
+    public static Boolean getMajority() {
+        return getParsedArgs().hasOption(OptionConstants.FLAG_MAJORITY);
+    }
+
+    public static Boolean getHorizontal() {
+        return !getVertical();
+    }
+
+    public static Boolean getVisualizeLSBs() {
+        return getParsedArgs().hasOption(OptionConstants.FLAG_VISUALIZE_LSBS);
     }
 
     //
@@ -113,21 +129,21 @@ public final class Options {
     private static LSBWatermark getLSBWM() {
         var lsbWM = new LSBWatermark();
 
-        if (getParsedArgs().hasOption(OptionConstants.FLAG_HORIZONTAL))
-            lsbWM.setVerticalMode(Boolean.FALSE);
-        if (getParsedArgs().hasOption(OptionConstants.FLAG_VERTICAL))
-            lsbWM.setVerticalMode(Boolean.TRUE);
+        Log.debug(null, "Options.getLSBWM lsbWM.setVerticalMode(%s)", Boolean.toString(getVertical()));
+        lsbWM.setVerticalMode(getVertical());
 
         return lsbWM;
     }
 
     private static StripesWatermark getStripesWM() {
-        StripesWatermark stripesWM = (StripesWatermark) getLSBWM();
+        StripesWatermark stripesWM = new StripesWatermark();
 
-        if (getParsedArgs().hasOption(OptionConstants.FLAG_MAJORITY))
-            stripesWM.setMajorityMode(Boolean.TRUE);
+        Log.debug(null, "Options.getStripesWM stripesWM.setVerticalMode(%s)", Boolean.toString(getVertical()));
+        stripesWM.setVerticalMode(getVertical());
+        Log.debug(null, "Options.getStripesWM stripesWM.setMajorityMode(%s)", Boolean.toString(getMajority()));
+        stripesWM.setMajorityMode(getMajority());
 
-        return new StripesWatermark();
+        return stripesWM;
     }
 
     private static BlocksWatermark getBlocksWM() {
