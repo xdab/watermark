@@ -47,7 +47,7 @@ public class ImageUtils {
 
     public static Pair<Integer, Integer> getPositionFromVIndex(@NonNull Image img, @NonNull Integer vIndex) {
         int height = img.getHeight(null);
-        return Pair.with(vIndex % height, vIndex / height);
+        return Pair.with(vIndex / height, vIndex % height);
     }
 
     public static Pair<Integer, Integer> getPositionFromPxIndex(@NonNull Image img, @NonNull Integer pxIndex, @NonNull Boolean vertical) {
