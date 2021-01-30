@@ -23,4 +23,14 @@ public class BitUtils {
         candidate &= 0x1ff;
         return goodParity(candidate) && ((candidate >>> 1) == correctByte);
     }
+
+    public static boolean isGoodWord(int candidate, int correctWord) {
+        if (!isGoodByte(candidate & 0x1ff, correctWord & 0xff))
+            return false;
+
+        candidate >>= 9;
+        correctWord >>= 8;
+        return isGoodByte(candidate & 0x1ff, correctWord & 0xff);
+    }
+
 }

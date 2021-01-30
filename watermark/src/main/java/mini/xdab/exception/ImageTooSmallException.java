@@ -1,13 +1,12 @@
 package mini.xdab.exception;
 
-import java.util.ResourceBundle;
+import mini.xdab.singleton.Strings;
+
 
 public class ImageTooSmallException extends Exception {
 
-    private final ResourceBundle strings;
-
-    public ImageTooSmallException(ResourceBundle strings) {
-        this.strings = strings;
+    public ImageTooSmallException(Integer watermarkSizePx, Integer imageSizePx) {
+        super(String.format(Strings.getString("image-too-small-exception-msg-fmt"), watermarkSizePx, imageSizePx));
     }
 
 }

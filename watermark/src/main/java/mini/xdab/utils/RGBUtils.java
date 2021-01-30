@@ -2,7 +2,7 @@ package mini.xdab.utils;
 
 public class RGBUtils {
 
-    public static final int RGB_LSB_MASK = 0x010101;
+    private static final int RGB_LSB_MASK = 0x010101;
 
     public static int setChannelLSBs(int rgb, int threeBits) {
         int setR = (threeBits & 0b100) << 14;
