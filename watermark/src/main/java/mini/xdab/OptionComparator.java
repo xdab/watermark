@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 public class OptionComparator<T extends Option> implements Comparator<T> {
 
-    private static final String OPTS_ORDER = "iotmrlsbchv"; // short option names
+    private static final String OPTS_ORDER = "iotmrlsbchvMV"; // short option names
 
     @Override
     public int compare(@NotNull T o1, @NotNull T o2) {

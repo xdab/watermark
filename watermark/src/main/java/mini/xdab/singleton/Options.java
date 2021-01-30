@@ -102,12 +102,22 @@ public final class Options {
     //
 
     private static LSBWatermark getLSBWM() {
-        // todo: parse other arguments to set lsb specific options
-        return new LSBWatermark();
+        var lsbWM = new LSBWatermark();
+
+        if (getParsedArgs().hasOption(OptionConstants.FLAG_HORIZONTAL))
+            lsbWM.setVerticalMode(Boolean.FALSE);
+        if (getParsedArgs().hasOption(OptionConstants.FLAG_VERTICAL))
+            lsbWM.setVerticalMode(Boolean.TRUE);
+
+        return lsbWM;
     }
 
     private static StripesWatermark getStripesWM() {
-        // todo: parse other arguments to set stripes specific options
+        StripesWatermark stripesWM = (StripesWatermark) getLSBWM();
+
+        if (getParsedArgs().hasOption(OptionConstants.FLAG_MAJORITY))
+            stripesWM.setMajorityMode(Boolean.TRUE);
+
         return new StripesWatermark();
     }
 
