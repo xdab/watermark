@@ -3,7 +3,6 @@ package mini.xdab.utils;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.javatuples.Pair;
-import org.javatuples.Tuple;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -52,6 +51,10 @@ public class ImageUtils {
 
     public static Pair<Integer, Integer> getPositionFromPxIndex(@NonNull Image img, @NonNull Integer pxIndex, @NonNull Boolean vertical) {
         return vertical ? getPositionFromVIndex(img, pxIndex) : getPositionFromHIndex(img, pxIndex);
+    }
+
+    public static Pair<Integer, Integer> getPositionFromStripeDims(@NonNull Integer indexedDim, @NonNull Integer countedDim, @NonNull Boolean vertical) {
+        return vertical ? Pair.with(indexedDim, countedDim) : Pair.with(countedDim, indexedDim);
     }
 
     public static Integer getImageSize(@NonNull Image img) {
