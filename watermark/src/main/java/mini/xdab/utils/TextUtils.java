@@ -22,4 +22,8 @@ public class TextUtils {
         return sb.toString();
     }
 
+    public static String stripAndLower(String str) {
+        return str.strip().toLowerCase();
+    }
+
 }
