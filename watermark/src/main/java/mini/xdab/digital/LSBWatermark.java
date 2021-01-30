@@ -5,16 +5,16 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import mini.xdab.constants.BitConstants;
+import mini.xdab.constants.Consts;
 import mini.xdab.exception.ImageTooSmallException;
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Random;
+import mini.xdab.digital.tools.MessagesBuffer;
 import mini.xdab.utils.BitUtils;
 import mini.xdab.utils.ImageUtils;
 import mini.xdab.utils.RGBUtils;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static mini.xdab.constants.LSBConstants.*;
@@ -29,8 +29,7 @@ public class LSBWatermark extends DigitalWatermark {
     @SneakyThrows
     @Override
     public byte[] read(@NonNull BufferedImage img) {
-        var probableMessages = findProbableMessages(img);
-        return processProbableMessages(img, probableMessages);
+        return processProbableMessages(img, findProbableMessages(img));
     }
 
     @SneakyThrows
@@ -45,7 +44,7 @@ public class LSBWatermark extends DigitalWatermark {
 
         // Start from random position
         int pxIndex = Random.getInt(imgSizePx - wmSizePx - 1);
-        Log.debug("LSBWatermark.write Writing at pxIndex=%d", pxIndex);
+        Log.debug(this,".write Writing at pxIndex=%d", pxIndex);
 
         writeGoodWord(img, BitConstants.SYNC_WORD, pxIndex);
         pxIndex += WORD_SIZE_PIXELS;
@@ -59,7 +58,7 @@ public class LSBWatermark extends DigitalWatermark {
     }
 
 
-    protected ArrayList<Integer> findProbableMessages(@NonNull BufferedImage img) {
+    private ArrayList<Integer> findProbableMessages(BufferedImage img) {
         int imgSizePx = ImageUtils.getImageSize(img);
         var probableMessages = new ArrayList<Integer>();
         Log.info("LSBWatermark.findProbableMessages Starting for image '%s' of size %d pixels", img.toString(), imgSizePx);
@@ -68,97 +67,84 @@ public class LSBWatermark extends DigitalWatermark {
 
         for (int pxIndex = 0; pxIndex < imgSizePx; ++pxIndex) {
             var xy = ImageUtils.getPositionFromPxIndex(img, pxIndex, verticalMode);
-            Log.ultra("LSBWatermark.findProbableMessages at pxIndex=%d of %d (x=%d, y=%d)", pxIndex, imgSizePx, xy.getValue0(), xy.getValue1());
+            Log.ultra(this, ".findProbableMessages at pxIndex=%d of %d (x=%d, y=%d)", pxIndex, imgSizePx, xy.getValue0(), xy.getValue1());
 
             int pxRGB = img.getRGB(xy.getValue0(), xy.getValue1());
             int channelLSBs = RGBUtils.getChannelLSBs(pxRGB);
-            lastRead = (lastRead << 3) | channelLSBs;
+            lastRead = (lastRead << Consts.RGB_CHANNELS) | channelLSBs;
 
             if (BitUtils.isGoodSyncWord(lastRead)) {
                 int probableMessageStart = pxIndex - WORD_SIZE_PIXELS + 1;
                 probableMessages.add(probableMessageStart);
-                Log.debug("LSBWatermark.findProbableMessages Probable message", probableMessageStart, imgSizePx);
+                Log.debug(this, ".findProbableMessages Probable message at pxIndex=%d of %d", probableMessageStart, imgSizePx);
             }
         }
 
+        Log.debug(this, ".findProbableMessages Returning %d probable messages", probableMessages.size());
         return probableMessages;
     }
 
 
-    protected byte[] processProbableMessages(@NonNull BufferedImage img, @NonNull ArrayList<Integer> probableMessages) {
+    private byte[] processProbableMessages(BufferedImage img, ArrayList<Integer> probableMessages) {
         int imgSizePx = ImageUtils.getImageSize(img);
+        var msgsBuffer = new MessagesBuffer();
 
-        var messageBuffer = new ByteArrayOutputStream();
-        var message = new ByteArrayOutputStream();
-
-        int lastBytes = 0x0000;
-
+        int lastRead = 0x0000;
         for (int msgStartPx : probableMessages) {
-            messageBuffer.reset();
+            msgsBuffer.beginMessage();
 
             for (int pos = msgStartPx; pos < imgSizePx-BYTE_SIZE_PIXELS; pos += BYTE_SIZE_PIXELS) {
                 Byte b = readGoodByte(img, pos);
                 if (b == null) {
-                    messageBuffer.reset();
+                    msgsBuffer.abortMessage();
                     break;
                 }
 
-                lastBytes = (lastBytes << 8) | b;
-                messageBuffer.write(b);
-                if (BitUtils.isEndWord(lastBytes)) {
-                    Log.info("LSBWatermark.processProbableMessages Message (startPx=%d, endPx=%d) has ended correctly", msgStartPx, pos);
+                lastRead = (lastRead << 8) | b;
+                msgsBuffer.addMessageByte(b);
+                if (BitUtils.isEndWord(lastRead)) {
+                    msgsBuffer.concludeMessage();
+                    Log.info(this, ".processProbableMessages Message (startPx=%d, endPx=%d) concluded", msgStartPx, pos);
                     break;
-                }
-            }
-
-            if (messageBuffer.size() > 0) {
-                Log.debug("LSBWatermark.processProbableMessages Writing message (startPx=%d) to main buffer", msgStartPx);
-                try { message.write(messageBuffer.toByteArray()); }
-                catch (IOException ioe) {
-                    Log.error("LSBWatermark.processProbableMessages Unable to write message (startPx=%d) to main buffer: %s", msgStartPx, ioe.getMessage());
                 }
             }
         }
 
-        Log.info("LSBWatermark.processProbableMessages Returning %d bytes of data", message.size());
-        return message.toByteArray();
+        Log.info(this,".processProbableMessages Returning %d bytes of data", msgsBuffer.size());
+        return msgsBuffer.getMessages();
     }
 
 
-    protected Byte readGoodByte(@NonNull BufferedImage img, int byteIdx) {
+    private Byte readGoodByte(BufferedImage img, int pxIndex) {
         int byteCandidate = 0x000;
 
         for (int offset = 0; offset < BYTE_SIZE_PIXELS; ++offset) {
-            var xy = ImageUtils.getPositionFromPxIndex(img, byteIdx + offset, verticalMode);
+            var xy = ImageUtils.getPositionFromPxIndex(img, pxIndex + offset, verticalMode);
 
             int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
             int threeBits = RGBUtils.getChannelLSBs(rgb);
-            byteCandidate = (byteCandidate << 3) | threeBits;
+            byteCandidate = (byteCandidate << Consts.RGB_CHANNELS) | threeBits;
         }
 
-        if (BitUtils.goodParity(byteCandidate))
-            return (byte) (byteCandidate >>> 1);
-
-        return null;
+        return BitUtils.goodByteOrNull(byteCandidate);
     }
 
-    protected void writeGoodByte(@NonNull BufferedImage img, Byte data, int startPx) {
-        // Append byte with 9th bit = parity
-        int dataInt = (data << 1) | BitUtils.parityBit(data);
+    private void writeGoodByte(BufferedImage img, Byte data, int startPx) {
+        var dataInt = BitUtils.goodByteOf(data);
 
         for (int i = 0; i < BYTE_SIZE_PIXELS; ++i, ++startPx) {
             var xy = ImageUtils.getPositionFromPxIndex(img, startPx, verticalMode);
 
             // Bit magic for left to right bit reading
             int threeBits = (dataInt & BitConstants.THIRD_BIT_TRIPLET_MASK) >> 6;
-            dataInt <<= 3;
+            dataInt <<= Consts.RGB_CHANNELS;
 
             int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
             img.setRGB(xy.getValue0(), xy.getValue1(), RGBUtils.setChannelLSBs(rgb, threeBits));
         }
     }
 
-    protected void writeGoodWord(@NonNull BufferedImage img, Integer word, int startPx) {
+    private void writeGoodWord(BufferedImage img, Integer word, int startPx) {
         writeGoodByte(img, (byte) ((word & 0xff00) >> 8), startPx);
         writeGoodByte(img, (byte) ((word & 0xff)), startPx + BYTE_SIZE_PIXELS);
     }

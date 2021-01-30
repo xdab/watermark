@@ -23,7 +23,7 @@ public class Random {
 
     public static Integer getInt(Integer from, Integer to) {
         if (from > to) {
-            Log.warn("Random.getInt(int,int) Swapping misordered values (from>to)");
+            Log.warn(null, "Random.getInt(int,int) Swapping misordered values (from>to)");
             int t = from;
             from = to;
             to = t;
