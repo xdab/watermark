@@ -1,8 +1,11 @@
 package mini.xdab.digital;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import mini.xdab.utils.BitUtils;
+import mini.xdab.utils.ImageUtils;
 import mini.xdab.utils.RGBUtils;
 
 import java.awt.image.BufferedImage;
@@ -27,10 +30,9 @@ public class LSBWatermark extends DigitalWatermark {
         int byteCandidate = 0x000;
 
         for (int offset = 0; offset < 3; ++offset) {
-            int x = (position + offset) % img.getWidth();
-            int y = (position + offset) / img.getHeight();
+            var xy = ImageUtils.getPositionFromHIndex(img, position + offset);
 
-            int rgb = img.getRGB(x, y);
+            int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
             int threeBits = RGBUtils.getChannelLSBs(rgb);
             byteCandidate = (byteCandidate << 3) | threeBits;
         }
@@ -54,12 +56,11 @@ public class LSBWatermark extends DigitalWatermark {
         int lastRead = 0x000;
 
         for (int position = 0; position < imgSizePx; ++position) {
-            int x = position % img.getWidth();
-            int y = position / img.getHeight();
+            var xy = ImageUtils.getPositionFromHIndex(img, position);
 
             // Interpret current pixels as three bits
             // updating the int "buffer" with them
-            int rgb = img.getRGB(x, y);
+            int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
             int threeBits = RGBUtils.getChannelLSBs(rgb);
             lastRead = (lastRead << 3) | threeBits;
 
@@ -114,15 +115,14 @@ public class LSBWatermark extends DigitalWatermark {
         int dataInt = (data << 1) | BitUtils.parityBit(data);
 
         for (int i = 0; i < 3; ++i, ++startPx) {
-            int x = startPx % img.getWidth();
-            int y = startPx / img.getHeight();
+            var xy = ImageUtils.getPositionFromHIndex(img, startPx);
 
             // Bit magic for left to right bit reading
             int threeBits = (dataInt & 0b111000000) >> 6;
             dataInt <<= 3;
 
-            int rgb = img.getRGB(x, y);
-            img.setRGB(x, y, RGBUtils.setChannelLSBs(rgb, threeBits));
+            int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
+            img.setRGB(xy.getValue0(), xy.getValue1(), RGBUtils.setChannelLSBs(rgb, threeBits));
         }
     }
 
@@ -142,13 +142,12 @@ public class LSBWatermark extends DigitalWatermark {
         writeByte(img, SYNC_WORD, positionPx);
         positionPx += 3;
 
-        for (int i = 0; i < data.length; ++i) {
-            writeByte(img, data[i], positionPx);
+        for (byte b : data) {
+            writeByte(img, b, positionPx);
             positionPx += 3;
         }
 
         writeByte(img, END_WORD, positionPx);
-        //positionPx += 3; // Never used again
     }
 
 }

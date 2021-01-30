@@ -1,8 +1,11 @@
 package mini.xdab.utils;
 
 import lombok.SneakyThrows;
+import org.javatuples.Pair;
+import org.javatuples.Tuple;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +37,16 @@ public class ImageUtils {
         try {
             ImageIO.write(img, format, file);
         } catch (IOException ioe) { }
+    }
+
+    public static Pair<Integer, Integer> getPositionFromHIndex(Image img, Integer hIndex) {
+        int width = img.getWidth(null);
+        return Pair.with(hIndex % width, hIndex / width);
+    }
+
+    public static Pair<Integer, Integer> getPositionFromVIndex(Image img, Integer vIndex) {
+        int height = img.getHeight(null);
+        return Pair.with(vIndex % height, vIndex / height);
     }
 
 }
