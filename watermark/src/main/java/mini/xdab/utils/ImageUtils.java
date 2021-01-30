@@ -1,5 +1,6 @@
 package mini.xdab.utils;
 
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.javatuples.Pair;
 import org.javatuples.Tuple;
@@ -39,14 +40,18 @@ public class ImageUtils {
         } catch (IOException ioe) { }
     }
 
-    public static Pair<Integer, Integer> getPositionFromHIndex(Image img, Integer hIndex) {
+    public static Pair<Integer, Integer> getPositionFromHIndex(@NonNull Image img, @NonNull Integer hIndex) {
         int width = img.getWidth(null);
         return Pair.with(hIndex % width, hIndex / width);
     }
 
-    public static Pair<Integer, Integer> getPositionFromVIndex(Image img, Integer vIndex) {
+    public static Pair<Integer, Integer> getPositionFromVIndex(@NonNull Image img, @NonNull Integer vIndex) {
         int height = img.getHeight(null);
         return Pair.with(vIndex % height, vIndex / height);
+    }
+
+    public static Pair<Integer, Integer> getPositionFromPxIndex(@NonNull Image img, @NonNull Integer pxIndex, @NonNull Boolean vertical) {
+        return vertical ? getPositionFromVIndex(img, pxIndex) : getPositionFromHIndex(img, pxIndex);
     }
 
 }
