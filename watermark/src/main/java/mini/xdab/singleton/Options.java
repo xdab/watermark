@@ -1,5 +1,6 @@
 package mini.xdab.singleton;
 
+import lombok.NonNull;
 import mini.xdab.IWatermarkReader;
 import mini.xdab.IWatermarkWriter;
 import mini.xdab.constants.OptionConstants;
@@ -7,7 +8,7 @@ import mini.xdab.digital.BlocksWatermark;
 import mini.xdab.digital.ConstellationWatermark;
 import mini.xdab.digital.LSBWatermark;
 import mini.xdab.digital.StripesWatermark;
-import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.*;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -16,32 +17,32 @@ import java.util.Optional;
 
 public final class Options {
 
-    private static volatile CommandLine cmd;
+    private static volatile CommandLine parsedArgs;
 
-    public static CommandLine getCmd() {
-        if (cmd == null)
-            throw new RuntimeException("CLI options unset. Ensure parsing takes place");
-        return cmd;
+    public static void setParsedArgs(@NonNull CommandLine parsedArgs) {
+        if (Options.parsedArgs != null)
+            throw new RuntimeException("Setting CLI arguments for a second time");
+        Options.parsedArgs = parsedArgs;
     }
 
-    public static void setCmd(CommandLine cmd) {
-        if (Options.cmd != null)
-            throw new RuntimeException("Setting CLI options twice at runtime");
-        Options.cmd = cmd;
+    private static CommandLine getParsedArgs() {
+        if (parsedArgs == null)
+            throw new RuntimeException("CLI options unset. Ensure parsing takes place");
+        return parsedArgs;
     }
 
     public static String getInput() {
-        return cmd.getOptionValue(OptionConstants.LONG_ARGUMENT_INPUT);
+        return getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_INPUT);
     }
 
     public static String getOutput() {
         return Optional
-                .ofNullable(getCmd().getOptionValue(OptionConstants.LONG_ARGUMENT_OUTPUT))
+                .ofNullable(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_OUTPUT))
                 .orElseGet(Options::getDefaultOutput);
     }
 
     public static IWatermarkWriter getWriter() {
-        var t = getCmd().getOptionValue(OptionConstants.LONG_ARGUMENT_TYPE);
+        var t = getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_TYPE);
         if (t == null || t.isEmpty())
             return getDefaultWM();
 
@@ -68,40 +69,29 @@ public final class Options {
     }
 
     public static Integer getRepeat() {
-        int R = getDefaultRepeat();
-        try { R = Integer.parseUnsignedInt(getCmd().getOptionValue(OptionConstants.LONG_ARGUMENT_REPEAT)); }
+        int R = OptionConstants.DEFAULT_REPEAT;
+        try { R = Integer.parseUnsignedInt(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_REPEAT)); }
         catch (NumberFormatException nfe) { }
         return R;
     }
 
     public static String getMessage() {
         return Optional
-                .ofNullable(getCmd().getOptionValue(OptionConstants.LONG_ARGUMENT_MESSAGE))
-                .orElseGet(Options::getDefaultMessage);
+                .ofNullable(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_MESSAGE))
+                .orElse(OptionConstants.DEFAULT_MESSAGE);
     }
 
     //
 
     private static String getDefaultOutput() {
-        String[] inputSplitByDots = getInput().split("\\.");
-        int fileExtensionIdx = inputSplitByDots.length - 1;
-        if (fileExtensionIdx >= 0) {
-            inputSplitByDots[fileExtensionIdx] = "_OUTPUT.png";
-            return Arrays.stream(inputSplitByDots).reduce((a, b) -> a+b).orElse("output.png");
-        }
-        return "output.png";
+        var modifiedInput = getInput().replaceFirst("^(.+)(\\.\\D+$)", "$1_out$2");
+        if (!modifiedInput.equals(getInput()))
+            return modifiedInput;
+        return OptionConstants.DEFAULT_OUTPUT;
     }
 
     private static IWatermarkWriter getDefaultWM() {
         return getLSBWM();
-    }
-
-    private static Integer getDefaultRepeat() {
-        return 1;
-    }
-
-    private static String getDefaultMessage() {
-        return "WATERMARK";
     }
 
     //

@@ -27,4 +27,8 @@ public class OptionConstants {
     public static final String FLAG_HORIZONTAL = "h";
     public static final String FLAG_VERTICAL = "v";
 
+    public static final String DEFAULT_MESSAGE = "MESSAGE";
+    public static final String DEFAULT_OUTPUT = "output.png";
+    public static final Integer DEFAULT_REPEAT = 1;
+
 }
