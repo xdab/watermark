@@ -44,4 +44,13 @@ public class BitUtils {
         return (candidateEndWord & 0xffff) == BitConstants.END_WORD;
     }
 
+    public static Byte goodByteOrNull(Integer candidateByte) {
+        return goodParity(candidateByte) ? ((byte) (candidateByte >>> 1)) : null;
+    }
+
+    public static Integer goodByteOf(Byte normalByte) {
+        return (normalByte << 1) | parityBit(normalByte);
+    }
+
+
 }
