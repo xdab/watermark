@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import mini.xdab.constants.BitConstants;
 import mini.xdab.exception.ImageTooSmallException;
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Random;
@@ -37,7 +38,7 @@ public class LSBWatermark extends DigitalWatermark {
     public void write(@NonNull BufferedImage img, @NonNull byte[] data) {
         // Fit watermark onto image
         int imgSizePx = ImageUtils.getImageSize(img);
-        int wmSizePx = data.length * BYTE_SIZE_PIXELS + (NUM_END_WORDS + NUM_SYNC_WORDS) * WORD_SIZE_PIXELS;
+        int wmSizePx = data.length * BYTE_SIZE_PIXELS + 2 * WORD_SIZE_PIXELS;
 
         if (imgSizePx < wmSizePx)
             throw new ImageTooSmallException(wmSizePx, imgSizePx);
@@ -46,7 +47,7 @@ public class LSBWatermark extends DigitalWatermark {
         int pxIndex = Random.getInt(imgSizePx - wmSizePx - 1);
         Log.debug("LSBWatermark.write Writing at pxIndex=%d", pxIndex);
 
-        writeGoodWord(img, SYNC_WORD, pxIndex);
+        writeGoodWord(img, BitConstants.SYNC_WORD, pxIndex);
         pxIndex += WORD_SIZE_PIXELS;
 
         for (byte b : data) {
@@ -54,7 +55,7 @@ public class LSBWatermark extends DigitalWatermark {
             pxIndex += BYTE_SIZE_PIXELS;
         }
 
-        writeGoodWord(img, END_WORD, pxIndex);
+        writeGoodWord(img, BitConstants.END_WORD, pxIndex);
     }
 
 
@@ -73,7 +74,7 @@ public class LSBWatermark extends DigitalWatermark {
             int channelLSBs = RGBUtils.getChannelLSBs(pxRGB);
             lastRead = (lastRead << 3) | channelLSBs;
 
-            if (isGoodSyncWord(lastRead)) {
+            if (BitUtils.isGoodSyncWord(lastRead)) {
                 int probableMessageStart = pxIndex - WORD_SIZE_PIXELS + 1;
                 probableMessages.add(probableMessageStart);
                 Log.debug("LSBWatermark.findProbableMessages Probable message", probableMessageStart, imgSizePx);
@@ -82,7 +83,6 @@ public class LSBWatermark extends DigitalWatermark {
 
         return probableMessages;
     }
-
 
 
     protected byte[] processProbableMessages(@NonNull BufferedImage img, @NonNull ArrayList<Integer> probableMessages) {
@@ -96,7 +96,7 @@ public class LSBWatermark extends DigitalWatermark {
         for (int msgStartPx : probableMessages) {
             messageBuffer.reset();
 
-            for (int pos = msgStartPx; pos < imgSizePx-BYTE_SIZE_PIXELS; pos+=BYTE_SIZE_PIXELS) {
+            for (int pos = msgStartPx; pos < imgSizePx-BYTE_SIZE_PIXELS; pos += BYTE_SIZE_PIXELS) {
                 Byte b = readGoodByte(img, pos);
                 if (b == null) {
                     messageBuffer.reset();
@@ -105,7 +105,7 @@ public class LSBWatermark extends DigitalWatermark {
 
                 lastBytes = (lastBytes << 8) | b;
                 messageBuffer.write(b);
-                if (isEndWord(lastBytes)) {
+                if (BitUtils.isEndWord(lastBytes)) {
                     Log.info("LSBWatermark.processProbableMessages Message (startPx=%d, endPx=%d) has ended correctly", msgStartPx, pos);
                     break;
                 }
@@ -150,7 +150,7 @@ public class LSBWatermark extends DigitalWatermark {
             var xy = ImageUtils.getPositionFromPxIndex(img, startPx, verticalMode);
 
             // Bit magic for left to right bit reading
-            int threeBits = (dataInt & THIRD_BIT_TRIPLET_MASK) >> 6;
+            int threeBits = (dataInt & BitConstants.THIRD_BIT_TRIPLET_MASK) >> 6;
             dataInt <<= 3;
 
             int rgb = img.getRGB(xy.getValue0(), xy.getValue1());
@@ -161,15 +161,6 @@ public class LSBWatermark extends DigitalWatermark {
     protected void writeGoodWord(@NonNull BufferedImage img, Integer word, int startPx) {
         writeGoodByte(img, (byte) ((word & 0xff00) >> 8), startPx);
         writeGoodByte(img, (byte) ((word & 0xff)), startPx + BYTE_SIZE_PIXELS);
-    }
-
-    // Semantic function to remove bit magic from message reading
-    protected static boolean isGoodSyncWord(Integer candidateSyncWord) {
-        return BitUtils.isGoodWord(candidateSyncWord, SYNC_WORD);
-    }
-
-    protected static boolean isEndWord(Integer candidateEndWord) {
-        return (candidateEndWord & 0xffff) == END_WORD;
     }
 
 }

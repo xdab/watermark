@@ -1,5 +1,8 @@
 package mini.xdab.utils;
 
+import mini.xdab.constants.BitConstants;
+
+
 public class BitUtils {
 
     public static int getLSB(int of) {
@@ -31,6 +34,14 @@ public class BitUtils {
         candidate >>= 9;
         correctWord >>= 8;
         return isGoodByte(candidate & 0x1ff, correctWord & 0xff);
+    }
+
+    public static boolean isGoodSyncWord(Integer candidateSyncWord) {
+        return isGoodWord(candidateSyncWord, BitConstants.SYNC_WORD);
+    }
+
+    public static boolean isEndWord(Integer candidateEndWord) {
+        return (candidateEndWord & 0xffff) == BitConstants.END_WORD;
     }
 
 }

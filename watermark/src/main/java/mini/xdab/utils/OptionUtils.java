@@ -13,7 +13,7 @@ public class OptionUtils {
 
         addArgumentOptions(options);
         addQuickTypesOptionGroup(options);
-        addFlagOptionGroup(options);
+        addFlags(options);
 
         var parser = new DefaultParser();
         var formatter = new HelpFormatter();
@@ -86,7 +86,7 @@ public class OptionUtils {
         options.addOptionGroup(quickTypes);
     }
 
-    private static void addFlagOptionGroup(org.apache.commons.cli.Options options) {
+    private static void addFlags(org.apache.commons.cli.Options options) {
         var flagOptions = new OptionGroup();
 
         var horizontal = new Option(OptionConstants.FLAG_HORIZONTAL,
@@ -98,6 +98,14 @@ public class OptionUtils {
         flagOptions.addOption(vertical);
 
         options.addOptionGroup(flagOptions);
+
+        var majority = new Option(OptionConstants.FLAG_MAJORITY,
+                Strings.getString("flag-majority-arg-desc"));
+        options.addOption(majority);
+
+        var visLSBs = new Option(OptionConstants.FLAG_VISUALIZE_LSBS,
+                Strings.getString("flag-visualize-lsbs-arg-desc"));
+        options.addOption(visLSBs);
     }
 
 }
