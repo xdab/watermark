@@ -23,6 +23,10 @@ public class Log {
     private static SimpleDateFormat dateTimeFormat;
 
 
+    public static void ultra(@NonNull String message, @Nullable Object... formatArgs) {
+        initialize(); log(String.format(message, formatArgs), LogConstants.LEVEL_ULTRA);
+    }
+
     public static void debug(@NonNull String message, @Nullable Object... formatArgs) {
         initialize(); log(String.format(message, formatArgs), LogConstants.LEVEL_DEBUG);
     }
@@ -57,7 +61,7 @@ public class Log {
 
 
     private static void log(String message, Integer level) {
-        if (level < loggingLevel)
+        if (level <= loggingLevel)
             return;
 
         String dateFormat = dateTimeFormat.format(Date.from(Instant.now()));
@@ -71,25 +75,7 @@ public class Log {
 
     private static void parseLoggingLevelString(String loggingLevelStr) {
         loggingLevelStr = TextUtils.stripAndLower(loggingLevelStr);
-
-        switch (loggingLevelStr) {
-            case "error":
-                loggingLevel = LogConstants.LEVEL_ERROR;
-                break;
-
-            case "warn":
-                loggingLevel = LogConstants.LEVEL_WARN;
-                break;
-
-            case "info":
-                loggingLevel = LogConstants.LEVEL_INFO;
-                break;
-
-            default:
-            case "debug":
-                loggingLevel = LogConstants.LEVEL_DEBUG;
-                break;
-        }
+        loggingLevel = LogConstants.levelStrToInt.getOrDefault(loggingLevelStr, LogConstants.LEVEL_INFO);
     }
 
     private static void parseUseStdErrString(String useStdErrStr) {
