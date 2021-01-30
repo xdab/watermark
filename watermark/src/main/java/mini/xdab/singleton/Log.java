@@ -6,6 +6,7 @@ import mini.xdab.constants.LogConstants;
 import mini.xdab.utils.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -17,7 +18,10 @@ public class Log {
     private static Integer loggingLevel;
 
     @Getter
-    private static boolean useStdErr;
+    private static PrintStream printStream;
+
+    @Getter
+    private static boolean fastFlush;
 
     private static boolean isInitialized = false;
     private static SimpleDateFormat dateTimeFormat;
@@ -48,11 +52,9 @@ public class Log {
         if (!isInitialized) {
             var properties =  ResourceBundle.getBundle(LogConstants.PROPERTIES_FILE);
 
-            var loggingLevelStr = properties.getString("logging-level");
-            parseLoggingLevelString(loggingLevelStr);
-
-            var useStdErrStr = properties.getString("use-stderr");
-            parseUseStdErrString(useStdErrStr);
+            parseLoggingLevelString(properties.getString("logging-level"));
+            parseUseStdErrString(properties.getString("use-stderr"));
+            parseFastFlushString(properties.getString("fast-flush"));
 
             dateTimeFormat = new SimpleDateFormat(properties.getString("datetime-str-pattern"));
             isInitialized = true;
@@ -67,10 +69,9 @@ public class Log {
         String dateFormat = dateTimeFormat.format(Date.from(Instant.now()));
         String formatted = String.format("LOG LV %03d @ %s > %s", level, dateFormat, message);
 
-        if (useStdErr)
-            System.err.println(formatted);
-        else
-            System.out.println(formatted);
+        printStream.println(formatted);
+        if (fastFlush)
+            printStream.flush();
     }
 
     private static void parseLoggingLevelString(String loggingLevelStr) {
@@ -80,7 +81,12 @@ public class Log {
 
     private static void parseUseStdErrString(String useStdErrStr) {
         useStdErrStr = TextUtils.stripAndLower(useStdErrStr);
-        useStdErr = Boolean.parseBoolean(useStdErrStr);
+        printStream = Boolean.parseBoolean(useStdErrStr) ? System.err : System.out;
+    }
+
+    private static void parseFastFlushString(String fastFlushStr) {
+        fastFlushStr = TextUtils.stripAndLower(fastFlushStr);
+        fastFlush = Boolean.parseBoolean(fastFlushStr);
     }
 
 }
