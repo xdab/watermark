@@ -12,6 +12,7 @@ import mini.xdab.digital.StripesWatermark;
 import mini.xdab.exception.OptionsException;
 import mini.xdab.utils.OptionUtils;
 import mini.xdab.utils.ParseUtils;
+import mini.xdab.utils.TextUtils;
 import org.apache.commons.cli.*;
 
 import java.util.Locale;
@@ -97,7 +98,7 @@ public final class Options {
     //
 
     private static String getDefaultOutput() {
-        var modifiedInput = getInput().replaceFirst("^(.+)(\\.\\D+$)", "$1_out$2");
+        var modifiedInput = TextUtils.appendToFileName(getInput(), "_out");
         if (!modifiedInput.equals(getInput()))
             return modifiedInput;
         return OptionConstants.DEFAULT_OUTPUT;

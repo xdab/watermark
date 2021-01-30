@@ -26,4 +26,7 @@ public class TextUtils {
         return str.strip().toLowerCase();
     }
 
+    public static String appendToFileName(String path, String stringToAppend) {
+        return path.replaceFirst("^(.+)(\\.\\D+$)", "$1" + stringToAppend + "$2");
+    }
 }
