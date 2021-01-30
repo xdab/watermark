@@ -1,6 +1,7 @@
 package mini.xdab.singleton;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import mini.xdab.IWatermarkReader;
 import mini.xdab.IWatermarkWriter;
 import mini.xdab.constants.OptionConstants;
@@ -8,9 +9,11 @@ import mini.xdab.digital.BlocksWatermark;
 import mini.xdab.digital.ConstellationWatermark;
 import mini.xdab.digital.LSBWatermark;
 import mini.xdab.digital.StripesWatermark;
+import mini.xdab.exception.OptionsException;
+import mini.xdab.utils.OptionUtils;
+import mini.xdab.utils.ParseUtils;
 import org.apache.commons.cli.*;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -19,15 +22,17 @@ public final class Options {
 
     private static volatile CommandLine parsedArgs;
 
-    public static void setParsedArgs(@NonNull CommandLine parsedArgs) {
+    @SneakyThrows
+    public static void init(@NonNull String[] args) {
         if (Options.parsedArgs != null)
-            throw new RuntimeException("Setting CLI arguments for a second time");
-        Options.parsedArgs = parsedArgs;
+            throw new OptionsException("Setting CLI arguments for a second time");
+        Options.parsedArgs = OptionUtils.parseArgsToCmd(args);
     }
 
+    @SneakyThrows
     private static CommandLine getParsedArgs() {
         if (parsedArgs == null)
-            throw new RuntimeException("CLI options unset. Ensure parsing takes place");
+            throw new OptionsException("CLI options unset. Ensure parsing takes place");
         return parsedArgs;
     }
 
@@ -69,10 +74,10 @@ public final class Options {
     }
 
     public static Integer getRepeat() {
-        int R = OptionConstants.DEFAULT_REPEAT;
-        try { R = Integer.parseUnsignedInt(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_REPEAT)); }
-        catch (NumberFormatException nfe) { }
-        return R;
+        return ParseUtils.uintOrDefault(
+            getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_REPEAT),
+            OptionConstants.DEFAULT_REPEAT
+        );
     }
 
     public static String getMessage() {
