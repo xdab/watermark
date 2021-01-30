@@ -1,7 +1,10 @@
 package mini.xdab;
 
+import lombok.SneakyThrows;
+import mini.xdab.exception.PlacementException;
+import mini.xdab.singleton.Random;
+
 import java.awt.*;
-import java.util.Random;
 
 public class Placement {
 
@@ -28,9 +31,10 @@ public class Placement {
 
     // Static utility functions
 
+    @SneakyThrows
     protected static int getX(int objectWidth, int totalWidth, int placement) {
         if (objectWidth > totalWidth)
-            throw new RuntimeException("Positioning object wider than total width");
+            throw new PlacementException(objectWidth, totalWidth, true);
         if (objectWidth == totalWidth)
             return 0;
 
@@ -46,10 +50,10 @@ public class Placement {
         }
     }
 
-
+    @SneakyThrows
     protected static int getY(int objectHeight, int totalHeight, int placement) {
         if (objectHeight > totalHeight)
-            throw new RuntimeException("Positioning object taller than total height");
+            throw new PlacementException(objectHeight, totalHeight, false);
         if (objectHeight == totalHeight)
             return 0;
 
