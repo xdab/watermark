@@ -40,7 +40,7 @@ public class Placement {
             case RIGHT:
                 return totalWidth - objectWidth - 1;
             case X_RANDOM:
-                return (new Random()).nextInt(totalWidth - objectWidth);
+                return Random.getInt(totalWidth - objectWidth);
             default: case CENTER:
                 return (totalWidth - objectWidth - 1) / 2;
         }
@@ -59,7 +59,7 @@ public class Placement {
             case BOTTOM:
                 return totalHeight - objectHeight - 1;
             case Y_RANDOM:
-                return (new Random()).nextInt(totalHeight - objectHeight);
+                return Random.getInt(totalHeight - objectHeight);
             default: case CENTER:
                 return (totalHeight - objectHeight - 1) / 2;
         }
