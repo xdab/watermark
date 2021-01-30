@@ -54,4 +54,7 @@ public class ImageUtils {
         return vertical ? getPositionFromVIndex(img, pxIndex) : getPositionFromHIndex(img, pxIndex);
     }
 
+    public static Integer getImageSize(@NonNull Image img) {
+        return img.getWidth(null) * img.getHeight(null);
+    }
 }

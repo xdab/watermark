@@ -30,7 +30,7 @@ public class LSBWatermark extends DigitalWatermark {
     @SneakyThrows
     @Override
     public byte[] read(@NonNull BufferedImage img) {
-        int imgSizePx = img.getHeight() * img.getHeight();
+        int imgSizePx = ImageUtils.getImageSize(img);
         var probableMessages = new ArrayList<Integer>();
 
         // Probable message starts (valid SYNC_WORD occurences)
@@ -93,7 +93,7 @@ public class LSBWatermark extends DigitalWatermark {
     @Override
     public void write(@NonNull BufferedImage img, @NonNull byte[] data) {
         // Fit watermark onto image
-        int imgSizePx = img.getHeight() * img.getWidth();
+        int imgSizePx = ImageUtils.getImageSize(img);
         int markSizePx = (NUM_SYNC_WORDS + NUM_END_WORDS + data.length) * BYTE_SIZE_PIXELS;
 
         if (markSizePx > imgSizePx) // Image too small
