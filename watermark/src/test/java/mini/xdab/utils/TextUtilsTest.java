@@ -1,9 +1,11 @@
-package mini.xdab;
+package mini.xdab.utils;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import mini.xdab.utils.TextUtils;
 import org.junit.Test;
+import org.w3c.dom.Text;
 
 import java.nio.charset.StandardCharsets;
 
@@ -34,4 +36,10 @@ public class TextUtilsTest {
         assertEquals(TextUtils.bytesToString(testArray2), "Example 2");
     }
 
+    @Test
+    public void testAppendToFileName() {
+        assertEquals(TextUtils.appendToFileName("test.png", "string"), "teststring.png");
+        assertEquals(TextUtils.appendToFileName("a.png.jpg.tif", "_output"), "a.png.jpg_output.tif");
+        assertEquals(TextUtils.appendToFileName("subdir/img.PNG", "xd"), "subdir/imgxd.PNG");
+    }
 }
