@@ -61,7 +61,7 @@ public class Log {
 
 
     private static void log(String message, Integer level) {
-        if (level <= loggingLevel)
+        if (level < loggingLevel)
             return;
 
         String dateFormat = dateTimeFormat.format(Date.from(Instant.now()));
