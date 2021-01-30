@@ -87,6 +87,20 @@ public class OptionUtils {
     }
 
     private static void addFlags(org.apache.commons.cli.Options options) {
+
+        var rwOptions = new OptionGroup();
+
+        var read = new Option(OptionConstants.FLAG_READ,
+                Strings.getString("flag-read-arg-desc"));
+        rwOptions.addOption(read);
+
+        var write = new Option(OptionConstants.FLAG_WRITE,
+                Strings.getString("flag-write-arg-desc"));
+        rwOptions.addOption(write);
+        rwOptions.setRequired(true);
+
+        options.addOptionGroup(rwOptions);
+
         var flagOptions = new OptionGroup();
 
         var horizontal = new Option(OptionConstants.FLAG_HORIZONTAL,

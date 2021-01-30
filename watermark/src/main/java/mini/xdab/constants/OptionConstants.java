@@ -24,6 +24,8 @@ public class OptionConstants {
     public static final String QUICK_TYPE_BLOCKS = "b";
     public static final String QUICK_TYPE_CONSTELLATION = "c";
 
+    public static final String FLAG_READ = "r";
+    public static final String FLAG_WRITE = "w";
     public static final String FLAG_HORIZONTAL = "h";
     public static final String FLAG_VERTICAL = "v";
     public static final String FLAG_MAJORITY = "M";

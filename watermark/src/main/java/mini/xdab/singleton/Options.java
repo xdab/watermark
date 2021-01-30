@@ -86,6 +86,14 @@ public final class Options {
                 .orElse(OptionConstants.DEFAULT_MESSAGE);
     }
 
+    public static Boolean getRead() {
+        return getParsedArgs().hasOption(OptionConstants.FLAG_READ);
+    }
+
+    public static Boolean getWrite() {
+        return getParsedArgs().hasOption(OptionConstants.FLAG_WRITE);
+    }
+
     //
 
     private static String getDefaultOutput() {
