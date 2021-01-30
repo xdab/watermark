@@ -2,14 +2,9 @@ package mini.xdab;
 
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Options;
-import mini.xdab.singleton.Strings;
 import mini.xdab.utils.ImageUtils;
-import mini.xdab.utils.OptionUtils;
 
-/**
- * Hello world!
- *
- */
+
 public class Main
 {
 
@@ -20,18 +15,20 @@ public class Main
 
 
     private static void run() {
-        var writer = Options.getWriter();
-        var reader = Options.getReader();
-
         var img = ImageUtils.loadFromFile(Options.getInput());
 
-        writer.write(img, Options.getMessage());
-        ImageUtils.saveToFile(img, Options.getOutput());
+        if (Options.getRead()) {
+            Log.info("Main.run Reading");
+            var reader = Options.getReader();
+            String readMessage = reader.readString(img);
+            System.out.println(readMessage);
+        }
 
-        if (reader != null) {
-            var img2 = ImageUtils.loadFromFile(Options.getOutput());
-            String readMessage = reader.readString(img2);
-            System.out.println("Decoded message: '" + readMessage + "'");
+        else if (Options.getWrite()) {
+            Log.info("Main.run Writing");
+            var writer = Options.getWriter();
+            writer.write(img, Options.getMessage());
+            ImageUtils.saveToFile(img, Options.getOutput());
         }
     }
 
