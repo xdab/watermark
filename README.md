@@ -81,3 +81,23 @@ Przykłady z dodatkowymi flagami:
     java -jar watermark-1.0-rc1.jar -w -i testInput1.png -o out2.png -t stripes -m "Majority Visualize" -M -V
     java -jar watermark-1.0-rc1.jar -r -i out3.png -t stripes -m "Majority Horizontal" -M -h
 
+## Kodowanie
+
+Ponieważ liczba kanałów kolorów piksela (3) nie dzieli równo liczby bitów w bajcie, do każdego bajtu dodawany jest bit parzystości. Tak uzyskane 9 bitów mieści się równo w 3 jednostkach zapisu (pikselach, bądź blokach pikseli).
+Dodatkową zaletą jest sprawniejsze odrzucanie niewłaściwych wiadomości.
+
+Na początku wiadomości zapisywane jest dodatkowo słowo synchronizacji (*0x5b5b*).
+Na końcu: słowo kończące (*0x2424*). *0x5b* w tablicy ASCII odpowiada znakowi '$', *0x24* odpowiada '['.
+
+
+## Metoda LSB
+
+Zapis/odczyt najmniej znaczących bitów w kolejnych pikselach obrazu. Począwszy od losowej pozycji początkowej. Kierunek postępu określa flaga (domyślnie od lewej do prawej, od góry do dołu)
+
+## Metoda Stripes
+
+Jeden pasek odpowiada jednemu kanałowi koloru w jednej całej linii pikseli (pion/poziom określa flaga). Jedna linia składa się wobec tego z trzech pasków.
+
+Bit wiadomości przenoszony jest na ostatnich bitach wartości w pasku.
+Bez flagi **M**, wszystkie wartości muszą być zgodnie ustawione na bit wiadomości.
+Z flagą wystarczy większość.
