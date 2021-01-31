@@ -20,6 +20,7 @@ public class OptionComparator<T extends Option> implements Comparator<T> {
             OptionConsts.FLAG_HORIZONTAL +
             OptionConsts.FLAG_VERTICAL +
             OptionConsts.FLAG_MAJORITY +
+            OptionConsts.FLAG_VISUALIZE_LSBS +
             OptionConsts.TYPE_ALIAS_LSB +
             OptionConsts.TYPE_ALIAS_STRIPES +
             OptionConsts.TYPE_ALIAS_CONSTELLATION;

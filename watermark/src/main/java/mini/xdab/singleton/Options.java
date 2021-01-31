@@ -151,8 +151,13 @@ public final class Options {
 
 
     private static ConstellationWatermark getConstellationWM() {
-        // todo: parse other arguments to set constellation specific options
-        return new ConstellationWatermark();
+        var constellationWM = new ConstellationWatermark();
+
+        Log.debug(null, "Options.getConstellationWM constellationWM.setKey(%d)", getKey());
+        constellationWM.setKey(getKey());
+        // todo: update when creating new fields
+
+        return constellationWM;
     }
 
 }
