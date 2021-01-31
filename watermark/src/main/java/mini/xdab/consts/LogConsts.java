@@ -1,9 +1,9 @@
-package mini.xdab.constants;
+package mini.xdab.consts;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LogConstants {
+public class LogConsts {
 
     public static final Integer LEVEL_ALL   =   0;
     public static final Integer LEVEL_ULTRA =  99;

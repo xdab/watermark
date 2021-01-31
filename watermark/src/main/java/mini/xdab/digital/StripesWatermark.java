@@ -4,14 +4,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import mini.xdab.constants.BitConstants;
-import mini.xdab.constants.Consts;
-import mini.xdab.digital.tools.Stripes;
+import mini.xdab.consts.BitConsts;
+import mini.xdab.consts.Consts;
+import mini.xdab.digital.util.Stripes;
 import mini.xdab.exception.ImageTooSmallException;
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Random;
-import mini.xdab.digital.tools.MessagesBuffer;
-import mini.xdab.digital.tools.ShiftRegister;
+import mini.xdab.digital.util.MessagesBuffer;
+import mini.xdab.digital.util.ShiftRegister;
 import mini.xdab.utils.BitUtils;
 import mini.xdab.utils.RGBUtils;
 
@@ -19,8 +19,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import static java.lang.Math.abs;
-import static mini.xdab.constants.StripesConstants.BYTE_SIZE_STRIPES;
-import static mini.xdab.constants.StripesConstants.WORD_SIZE_STRIPES;
+import static mini.xdab.consts.StripesConsts.BYTE_SIZE_STRIPES;
+import static mini.xdab.consts.StripesConsts.WORD_SIZE_STRIPES;
 import static mini.xdab.utils.ImageUtils.getPositionFromStripeDims;
 
 
@@ -52,7 +52,7 @@ public class StripesWatermark extends DigitalWatermark {
         int stripe = Random.getInt(stripes.getNumStripes() - wmSizeStripes - 1);
         Log.debug(this,".write Writing at stripe=%d", stripe);
 
-        writeGoodWord(img, stripes, BitConstants.SYNC_WORD, stripe);
+        writeGoodWord(img, stripes, BitConsts.SYNC_WORD, stripe);
         stripe += WORD_SIZE_STRIPES;
 
         for (byte b : data) {
@@ -60,7 +60,7 @@ public class StripesWatermark extends DigitalWatermark {
             stripe += BYTE_SIZE_STRIPES;
         }
 
-        writeGoodWord(img, stripes, BitConstants.END_WORD, stripe);
+        writeGoodWord(img, stripes, BitConsts.END_WORD, stripe);
     }
 
 

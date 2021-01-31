@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import mini.xdab.constants.BitConstants;
-import mini.xdab.constants.Consts;
+import mini.xdab.consts.BitConsts;
+import mini.xdab.consts.Consts;
 import mini.xdab.exception.ImageTooSmallException;
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Random;
-import mini.xdab.digital.tools.MessagesBuffer;
+import mini.xdab.digital.util.MessagesBuffer;
 import mini.xdab.utils.BitUtils;
 import mini.xdab.utils.ImageUtils;
 import mini.xdab.utils.RGBUtils;
@@ -17,7 +17,7 @@ import mini.xdab.utils.RGBUtils;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static mini.xdab.constants.LSBConstants.*;
+import static mini.xdab.consts.LSBConsts.*;
 
 
 public class LSBWatermark extends DigitalWatermark {
@@ -46,7 +46,7 @@ public class LSBWatermark extends DigitalWatermark {
         int pxIndex = Random.getInt(imgSizePx - wmSizePx - 1);
         Log.debug(this,".write Writing at pxIndex=%d", pxIndex);
 
-        writeGoodWord(img, BitConstants.SYNC_WORD, pxIndex);
+        writeGoodWord(img, BitConsts.SYNC_WORD, pxIndex);
         pxIndex += WORD_SIZE_PIXELS;
 
         for (byte b : data) {
@@ -54,7 +54,7 @@ public class LSBWatermark extends DigitalWatermark {
             pxIndex += BYTE_SIZE_PIXELS;
         }
 
-        writeGoodWord(img, BitConstants.END_WORD, pxIndex);
+        writeGoodWord(img, BitConsts.END_WORD, pxIndex);
     }
 
 
@@ -136,7 +136,7 @@ public class LSBWatermark extends DigitalWatermark {
             var xy = ImageUtils.getPositionFromPxIndex(img, startPx, verticalMode);
 
             // Bit magic for left to right bit reading
-            int threeBits = (dataInt & BitConstants.THIRD_BIT_TRIPLET_MASK) >> 6;
+            int threeBits = (dataInt & BitConsts.THIRD_BIT_TRIPLET_MASK) >> 6;
             dataInt <<= Consts.RGB_CHANNELS;
 
             int rgb = img.getRGB(xy.getValue0(), xy.getValue1());

@@ -2,7 +2,7 @@ package mini.xdab.singleton;
 
 import lombok.Getter;
 import lombok.NonNull;
-import mini.xdab.constants.LogConstants;
+import mini.xdab.consts.LogConsts;
 import mini.xdab.utils.TextUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,8 +10,6 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.isNull;
@@ -32,29 +30,29 @@ public class Log {
 
 
     public static void ultra(@Nullable Object caller, @NonNull String message, @Nullable Object... formatArgs) {
-        initialize(); log(LogConstants.LEVEL_ULTRA, caller, message, formatArgs);
+        initialize(); log(LogConsts.LEVEL_ULTRA, caller, message, formatArgs);
     }
 
     public static void debug(@Nullable Object caller, @NonNull String message, @Nullable Object... formatArgs) {
-        initialize(); log(LogConstants.LEVEL_DEBUG, caller, message, formatArgs);
+        initialize(); log(LogConsts.LEVEL_DEBUG, caller, message, formatArgs);
     }
 
     public static void info(@Nullable Object caller, @NonNull String message, @Nullable Object... formatArgs) {
-        initialize(); log(LogConstants.LEVEL_INFO, caller, message, formatArgs);
+        initialize(); log(LogConsts.LEVEL_INFO, caller, message, formatArgs);
     }
 
     public static void warn(@Nullable Object caller, @NonNull String message, @Nullable Object... formatArgs) {
-        initialize(); log(LogConstants.LEVEL_WARN, caller, message, formatArgs);
+        initialize(); log(LogConsts.LEVEL_WARN, caller, message, formatArgs);
     }
 
     public static void error(@Nullable Object caller, @NonNull String message, @Nullable Object... formatArgs) {
-        initialize(); log(LogConstants.LEVEL_ERROR, caller, message, formatArgs);
+        initialize(); log(LogConsts.LEVEL_ERROR, caller, message, formatArgs);
     }
 
 
     private static void initialize() {
         if (!isInitialized) {
-            var properties =  ResourceBundle.getBundle(LogConstants.PROPERTIES_FILE);
+            var properties =  ResourceBundle.getBundle(LogConsts.PROPERTIES_FILE);
 
             parseLoggingLevelString(properties.getString("logging-level"));
             parseUseStdErrString(properties.getString("use-stderr"));
@@ -83,7 +81,7 @@ public class Log {
 
     private static void parseLoggingLevelString(String loggingLevelStr) {
         loggingLevelStr = TextUtils.stripAndLower(loggingLevelStr);
-        loggingLevel = LogConstants.levelStrToInt.getOrDefault(loggingLevelStr, LogConstants.LEVEL_INFO);
+        loggingLevel = LogConsts.levelStrToInt.getOrDefault(loggingLevelStr, LogConsts.LEVEL_INFO);
     }
 
     private static void parseUseStdErrString(String useStdErrStr) {

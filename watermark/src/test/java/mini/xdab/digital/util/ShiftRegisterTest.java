@@ -1,4 +1,4 @@
-package mini.xdab.digital.tools;
+package mini.xdab.digital.util;
 
 import org.junit.Test;
 

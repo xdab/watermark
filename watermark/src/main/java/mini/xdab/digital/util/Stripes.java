@@ -1,8 +1,8 @@
-package mini.xdab.digital.tools;
+package mini.xdab.digital.util;
 
 import lombok.Getter;
 import lombok.NonNull;
-import mini.xdab.constants.Consts;
+import mini.xdab.consts.Consts;
 import mini.xdab.singleton.Log;
 import mini.xdab.utils.RGBUtils;
 

@@ -17,6 +17,10 @@ public class Random {
         return random;
     }
 
+    public static void seed(Integer seed) {
+        random = new java.util.Random(seed);
+    }
+
     public static Integer getInt(Integer bound) {
         return getRandom().nextInt(bound);
     }

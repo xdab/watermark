@@ -2,8 +2,7 @@ package mini.xdab.utils;
 
 import static org.junit.Assert.*;
 
-import mini.xdab.constants.Consts;
-import mini.xdab.utils.RGBUtils;
+import mini.xdab.consts.Consts;
 import org.junit.Test;
 
 

@@ -4,8 +4,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import mini.xdab.IWatermarkReader;
 import mini.xdab.IWatermarkWriter;
-import mini.xdab.constants.OptionConstants;
-import mini.xdab.digital.BlocksWatermark;
+import mini.xdab.consts.OptionConsts;
 import mini.xdab.digital.ConstellationWatermark;
 import mini.xdab.digital.LSBWatermark;
 import mini.xdab.digital.StripesWatermark;
@@ -38,29 +37,27 @@ public final class Options {
     }
 
     public static String getInput() {
-        return getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_INPUT);
+        return getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_INPUT);
     }
 
     public static String getOutput() {
         return Optional
-                .ofNullable(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_OUTPUT))
+                .ofNullable(getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_OUTPUT))
                 .orElseGet(Options::getDefaultOutput);
     }
 
     public static IWatermarkWriter getWriter() {
-        var t = getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_TYPE);
+        var t = getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_TYPE);
         if (t == null || t.isEmpty())
             return getDefaultWM();
 
         t = t.toLowerCase(Locale.ROOT);
         switch (t) {
-            case OptionConstants.TYPE_ALIAS_LSB:
+            case OptionConsts.TYPE_ALIAS_LSB:
                 return getLSBWM();
-            case OptionConstants.TYPE_ALIAS_STRIPES:
+            case OptionConsts.TYPE_ALIAS_STRIPES:
                 return getStripesWM();
-            case OptionConstants.TYPE_ALIAS_BLOCKS:
-                return getBlocksWM();
-            case OptionConstants.TYPE_ALIAS_CONSTELLATION:
+            case OptionConsts.TYPE_ALIAS_CONSTELLATION:
                 return getConstellationWM();
         }
 
@@ -76,19 +73,19 @@ public final class Options {
 
     public static Integer getRepeat() {
         return ParseUtils.uintOrDefault(
-            getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_REPEAT),
-            OptionConstants.DEFAULT_REPEAT
+            getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_REPEAT),
+            OptionConsts.DEFAULT_REPEAT
         );
     }
 
     public static String getMessage() {
         return Optional
-                .ofNullable(getParsedArgs().getOptionValue(OptionConstants.LONG_ARGUMENT_MESSAGE))
-                .orElse(OptionConstants.DEFAULT_MESSAGE);
+                .ofNullable(getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_MESSAGE))
+                .orElse(OptionConsts.DEFAULT_MESSAGE);
     }
 
     public static Boolean getRead() {
-        return getParsedArgs().hasOption(OptionConstants.FLAG_READ);
+        return getParsedArgs().hasOption(OptionConsts.FLAG_READ);
     }
 
     public static Boolean getWrite() {
@@ -96,11 +93,11 @@ public final class Options {
     }
 
     public static Boolean getVertical() {
-        return getParsedArgs().hasOption(OptionConstants.FLAG_VERTICAL);
+        return getParsedArgs().hasOption(OptionConsts.FLAG_VERTICAL);
     }
 
     public static Boolean getMajority() {
-        return getParsedArgs().hasOption(OptionConstants.FLAG_MAJORITY);
+        return getParsedArgs().hasOption(OptionConsts.FLAG_MAJORITY);
     }
 
     public static Boolean getHorizontal() {
@@ -108,7 +105,7 @@ public final class Options {
     }
 
     public static Boolean getVisualizeLSBs() {
-        return getParsedArgs().hasOption(OptionConstants.FLAG_VISUALIZE_LSBS);
+        return getParsedArgs().hasOption(OptionConsts.FLAG_VISUALIZE_LSBS);
     }
 
     //
@@ -117,7 +114,7 @@ public final class Options {
         var modifiedInput = TextUtils.appendToFileName(getInput(), "_out");
         if (!modifiedInput.equals(getInput()))
             return modifiedInput;
-        return OptionConstants.DEFAULT_OUTPUT;
+        return OptionConsts.DEFAULT_OUTPUT;
     }
 
     private static IWatermarkWriter getDefaultWM() {
@@ -146,10 +143,6 @@ public final class Options {
         return stripesWM;
     }
 
-    private static BlocksWatermark getBlocksWM() {
-        // todo: parse other arguments to set blocks specific options
-        return new BlocksWatermark();
-    }
 
     private static ConstellationWatermark getConstellationWM() {
         // todo: parse other arguments to set constellation specific options

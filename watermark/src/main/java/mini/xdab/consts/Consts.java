@@ -1,4 +1,4 @@
-package mini.xdab.constants;
+package mini.xdab.consts;
 
 public class Consts {
 

@@ -1,6 +1,6 @@
 package mini.xdab.utils;
 
-import mini.xdab.constants.BitConstants;
+import mini.xdab.consts.BitConsts;
 
 
 public class BitUtils {
@@ -37,11 +37,11 @@ public class BitUtils {
     }
 
     public static boolean isGoodSyncWord(Integer candidateSyncWord) {
-        return isGoodWord(candidateSyncWord, BitConstants.SYNC_WORD);
+        return isGoodWord(candidateSyncWord, BitConsts.SYNC_WORD);
     }
 
     public static boolean isEndWord(Integer candidateEndWord) {
-        return (candidateEndWord & 0xffff) == BitConstants.END_WORD;
+        return (candidateEndWord & 0xffff) == BitConsts.END_WORD;
     }
 
     public static Byte goodByteOrNull(Integer candidateByte) {

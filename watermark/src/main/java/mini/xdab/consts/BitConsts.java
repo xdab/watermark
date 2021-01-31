@@ -1,6 +1,6 @@
-package mini.xdab.constants;
+package mini.xdab.consts;
 
-public class BitConstants {
+public class BitConsts {
 
     public static final Integer SYNC_WORD = 0x5b5b; // '[['
     public static final Integer  END_WORD = 0x2424; // '$$' (almost ~SYNC_WORD)
