@@ -8,7 +8,7 @@ public final class Strings {
 
     private static volatile ResourceBundle stringsResourceBundle;
 
-    public static ResourceBundle getStringsResourceBundle() {
+    private static ResourceBundle getStringsResourceBundle() {
         synchronized(Strings.class) {
             if (stringsResourceBundle == null)
                 stringsResourceBundle = ResourceBundle.getBundle("strings", Locale.getDefault());
@@ -16,7 +16,7 @@ public final class Strings {
         return stringsResourceBundle;
     }
 
-    public static String getString(String key) {
+    public static String get(String key) {
         return getStringsResourceBundle().getString(key);
     }
 

@@ -2,6 +2,7 @@ package mini.xdab;
 
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Options;
+import mini.xdab.singleton.Strings;
 import mini.xdab.tools.LSBVisualizer;
 import mini.xdab.utils.ImageUtils;
 import mini.xdab.utils.TextUtils;
@@ -18,6 +19,10 @@ public class Main
 
     private static void run() {
         var img = ImageUtils.loadFromFile(Options.getInput());
+        if (img == null) {
+            Log.error(null, "Main.run input image == null");
+            throw new RuntimeException(Strings.get("image-not-found-exception-msg-fmt"));
+        }
 
         if (Options.getRead()) {
             Log.info(null, "Main.run Reading");
