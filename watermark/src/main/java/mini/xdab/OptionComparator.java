@@ -16,6 +16,7 @@ public class OptionComparator<T extends Option> implements Comparator<T> {
             OptionConsts.SHORT_ARGUMENT_MESSAGE +
             OptionConsts.SHORT_ARGUMENT_TYPE +
             OptionConsts.SHORT_ARGUMENT_REPEAT +
+            OptionConsts.SHORT_ARGUMENT_KEY +
             OptionConsts.FLAG_HORIZONTAL +
             OptionConsts.FLAG_VERTICAL +
             OptionConsts.FLAG_MAJORITY +

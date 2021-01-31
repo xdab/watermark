@@ -84,6 +84,12 @@ public final class Options {
                 .orElse(OptionConsts.DEFAULT_MESSAGE);
     }
 
+    public static Integer getKey() {
+        if (getParsedArgs().hasOption(OptionConsts.LONG_ARGUMENT_KEY))
+            return ParseUtils.intOrDefault(getParsedArgs().getOptionValue(OptionConsts.LONG_ARGUMENT_KEY), null);
+        return null;
+    }
+
     public static Boolean getRead() {
         return getParsedArgs().hasOption(OptionConsts.FLAG_READ);
     }

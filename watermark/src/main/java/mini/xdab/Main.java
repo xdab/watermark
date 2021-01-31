@@ -2,6 +2,7 @@ package mini.xdab;
 
 import mini.xdab.singleton.Log;
 import mini.xdab.singleton.Options;
+import mini.xdab.singleton.Random;
 import mini.xdab.singleton.Strings;
 import mini.xdab.tools.LSBVisualizer;
 import mini.xdab.utils.ImageUtils;
@@ -13,6 +14,10 @@ public class Main
 
     public static void main(String[] args) {
         Options.init(args);
+        if (Options.getKey() != null) {
+            Random.seed(Options.getKey());
+        }
+
         run();
     }
 

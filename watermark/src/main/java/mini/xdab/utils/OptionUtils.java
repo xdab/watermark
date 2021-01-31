@@ -62,6 +62,12 @@ public class OptionUtils {
         repeat.setRequired(false);
         repeat.setArgName("NUMBER");
         options.addOption(repeat);
+
+        var key = new Option(OptionConsts.SHORT_ARGUMENT_KEY, OptionConsts.LONG_ARGUMENT_KEY,
+                true, Strings.get("key-arg-desc"));
+        key.setRequired(false);
+        key.setArgName("NUMBER");
+        options.addOption(key);
     }
 
     private static void addQuickTypesOptionGroup(org.apache.commons.cli.Options options) {
@@ -74,10 +80,6 @@ public class OptionUtils {
         var quickTypeStripes = new Option(OptionConsts.QUICK_TYPE_STRIPES,
                 Strings.get("quick-type-stripes-arg-desc"));
         quickTypes.addOption(quickTypeStripes);
-
-        var quickTypeBlocks = new Option(OptionConsts.QUICK_TYPE_BLOCKS,
-                Strings.get("quick-type-blocks-arg-desc"));
-        quickTypes.addOption(quickTypeBlocks);
 
         var quickTypeConstellation = new Option(OptionConsts.QUICK_TYPE_CONSTELLATION,
                 Strings.get("quick-type-constellation-arg-desc"));
